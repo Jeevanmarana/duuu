@@ -34,7 +34,7 @@ export function Layout({ children, currentTab, onTabChange }: LayoutProps) {
 
   return (
     <div className={`min-h-screen ${bgClass}`}>
-      <nav className={`${navBgClass} sticky top-0 z-50`}>
+      <nav className={`${navBgClass} sticky top-0 z-40`}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center space-x-2">
@@ -110,53 +110,53 @@ export function Layout({ children, currentTab, onTabChange }: LayoutProps) {
               </button>
             </div>
           </div>
-
-          <div className={`md:hidden flex items-center justify-around py-3 border-t ${mode === 'social' ? 'border-green-500/20 bg-gray-900' : 'border-gray-200 bg-white'}`}>
-            {tabs.map((tab) => {
-              const Icon = tab.icon;
-              const isActive = currentTab === tab.id;
-              return (
-                <button
-                  key={tab.id}
-                  onClick={() => onTabChange(tab.id)}
-                  className={`flex flex-col items-center space-y-1 p-2 rounded-lg transition ${
-                    mode === 'social'
-                      ? isActive
-                        ? 'text-green-400'
-                        : 'text-gray-500 hover:text-gray-400'
-                      : isActive
-                      ? 'text-blue-600'
-                      : 'text-gray-600'
-                  }`}
-                >
-                  <Icon className="w-5 h-5" />
-                  <span className="text-xs font-medium">{tab.label}</span>
-                </button>
-              );
-            })}
-            <button
-              onClick={() => setMode(mode === 'nerd' ? 'social' : 'nerd')}
-              className={`flex flex-col items-center space-y-1 p-2 rounded-lg transition ${
-                mode === 'social'
-                  ? 'text-gray-500 hover:text-gray-400'
-                  : 'text-gray-600 hover:text-gray-900'
-              }`}
-              title={`Switch to ${mode === 'nerd' ? 'Social' : 'Study'} Mode`}
-            >
-              {mode === 'nerd' ? (
-                <Sparkles className="w-5 h-5" />
-              ) : (
-                <Zap className="w-5 h-5" />
-              )}
-              <span className="text-xs font-medium">
-                {mode === 'nerd' ? 'Social' : 'Study'}
-              </span>
-            </button>
-          </div>
         </div>
       </nav>
 
-      <main className="pb-20 md:pb-0">{children}</main>
+      <main className="pb-24 md:pb-0">{children}</main>
+
+      <div className={`md:hidden fixed bottom-0 left-0 right-0 flex items-center justify-around py-3 border-t ${mode === 'social' ? 'border-green-500/20 bg-gray-900' : 'border-gray-200 bg-white'} z-40`}>
+        {tabs.map((tab) => {
+          const Icon = tab.icon;
+          const isActive = currentTab === tab.id;
+          return (
+            <button
+              key={tab.id}
+              onClick={() => onTabChange(tab.id)}
+              className={`flex flex-col items-center space-y-1 p-2 rounded-lg transition ${
+                mode === 'social'
+                  ? isActive
+                    ? 'text-green-400'
+                    : 'text-gray-500 hover:text-gray-400'
+                  : isActive
+                  ? 'text-blue-600'
+                  : 'text-gray-600'
+              }`}
+            >
+              <Icon className="w-5 h-5" />
+              <span className="text-xs font-medium">{tab.label}</span>
+            </button>
+          );
+        })}
+        <button
+          onClick={() => setMode(mode === 'nerd' ? 'social' : 'nerd')}
+          className={`flex flex-col items-center space-y-1 p-2 rounded-lg transition ${
+            mode === 'social'
+              ? 'text-gray-500 hover:text-gray-400'
+              : 'text-gray-600 hover:text-gray-900'
+          }`}
+          title={`Switch to ${mode === 'nerd' ? 'Social' : 'Study'} Mode`}
+        >
+          {mode === 'nerd' ? (
+            <Sparkles className="w-5 h-5" />
+          ) : (
+            <Zap className="w-5 h-5" />
+          )}
+          <span className="text-xs font-medium">
+            {mode === 'nerd' ? 'Social' : 'Study'}
+          </span>
+        </button>
+      </div>
     </div>
   );
 }
