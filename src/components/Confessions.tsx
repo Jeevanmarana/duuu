@@ -20,7 +20,10 @@ export function Confessions() {
 
   useEffect(() => {
     fetchConfessions();
-    subscribeToConfessions();
+    const subscription = subscribeToConfessions();
+    return () => {
+      subscription?.unsubscribe();
+    };
   }, []);
 
   const fetchConfessions = async () => {
@@ -54,19 +57,25 @@ export function Confessions() {
   };
 
   const subscribeToConfessions = () => {
-    supabase
-      .channel('confessions')
+    const channel = supabase
+      .channel('confessions-' + Date.now())
       .on(
         'postgres_changes',
         { event: 'INSERT', schema: 'public', table: 'confessions' },
-        (payload) => {
+        async (payload) => {
+          const { data: profileData } = await supabase
+            .from('profiles')
+            .select('name')
+            .eq('id', payload.new.user_id)
+            .maybeSingle();
+
           setConfessions((prev) => [
             {
               id: payload.new.id,
               user_id: payload.new.user_id,
               content: payload.new.content,
               created_at: payload.new.created_at,
-              profile_name: 'Anonymous',
+              profile_name: profileData?.name || 'Anonymous',
             },
             ...prev,
           ]);
@@ -80,6 +89,8 @@ export function Confessions() {
         }
       )
       .subscribe();
+
+    return channel;
   };
 
   const handlePostConfession = async (e: React.FormEvent) => {
